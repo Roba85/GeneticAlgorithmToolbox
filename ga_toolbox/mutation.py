@@ -1,9 +1,5 @@
 from __future__ import annotations
-
-import random
-from typing import Optional, Union, List
-from .interfaces import Mutation, Chromosome
-
+from interfaces import Mutation, Chromosome
 
 class BitFlipMutation(Mutation):
     def __call__(self, chromosome: Chromosome) -> Chromosome:
