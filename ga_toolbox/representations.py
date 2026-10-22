@@ -1,8 +1,5 @@
 from __future__ import annotations
-
-import random
-from typing import Optional, Sequence
-from .interfaces import Representation, Chromosome, is_permutation
+from interfaces import Representation, Chromosome, is_permutation
 
 
 class BinaryRepresentation(Representation):
