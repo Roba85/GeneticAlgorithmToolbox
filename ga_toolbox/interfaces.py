@@ -31,7 +31,6 @@ Fitnesses = List[float]
 # User-supplied problem functions (passed to the engine)
 FitnessFn = Callable[[Chromosome], float]    # Chromosome -> fitness value
 FeasibleFn = Callable[[Chromosome], bool]    # Chromosome -> True if feasible
-RepairFn = Callable[[Chromosome], Chromosome]     # optional: Chromosome -> feasible Chromosome
 
 
 # --------------------------------------------------------------------------
