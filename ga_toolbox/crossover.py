@@ -108,27 +108,4 @@ class OrderCrossover(Crossover):
 
         return child1, child2
 
-# def main():
 
-#     crossover = MultiPointCrossover()
-
-#     child1, child2 = crossover(
-#         [1, 0, 1, 1, 0, 0],
-#         [0, 1, 0, 0, 1, 1],
-#     )
-
-#     print(child1)
-#     print(child2)
-
-#     ox = OrderCrossover()
-
-#     child1, child2 = ox(
-#         [1, 2, 3, 4, 5, 6],
-#         [4, 1, 6, 2, 5, 3],
-#     )
-
-#     print(child1)
-#     print(child2)
-
-
-# main()

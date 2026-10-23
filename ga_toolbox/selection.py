@@ -112,19 +112,3 @@ class RouletteWheelSelection(Selection):
         return selected
 
 
-# def main():
-
-#     pop: Population = [[1], [2], [3], [4]]
-
-#     selection = TournamentSelection()
-
-#     # Select 3 parents
-#     parents = selection(
-#         population=pop,
-#         fitnesses=[1.0, 2.0, 3.0, 4.0],
-#         k=3,
-#     )
-
-#     print(parents)
-
-# main()
