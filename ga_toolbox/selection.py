@@ -7,16 +7,10 @@ from interfaces import Selection, Population, Fitnesses
 class TournamentSelection(Selection):
     def __init__(
             self, 
-            tournament_size: int = 2, 
             rng: Optional[random.Random] = None
         ):
 
         super().__init__(rng)
-
-        if tournament_size < 1:
-            raise ValueError("tournament_size must be at least 1")
-
-        self.tournament_size = tournament_size
 
     def __call__(
             self, 
@@ -34,17 +28,17 @@ class TournamentSelection(Selection):
         if not population:
             raise ValueError("Population cannot be empty")
 
-        if k < 0:
-            raise ValueError("k cannot be negative")
+        if k <= 1:
+            raise ValueError("k cannot be less than one")
 
         selected = []
 
-        for _ in range(k):
+        for _ in range(len(population)):
 
             # Select tournament_size candidates to choose the best form 
             candidates = [
                 self.rng.randrange(len(population))
-                for _ in range(self.tournament_size)
+                for _ in range(k)
             ]
 
             if maximize:
@@ -79,10 +73,13 @@ class RouletteWheelSelection(Selection):
         if not population:
             raise ValueError("Population cannot be empty")
 
+<<<<<<< HEAD
         if k <= 0:
             raise ValueError("k cannot be negative")
 
 
+=======
+>>>>>>> ec30427 (fix: return same size of population as passed in input in every selection method)
         if maximize:
             min_fitness = min(fitnesses)
             weights = [
@@ -101,7 +98,7 @@ class RouletteWheelSelection(Selection):
 
         selected = []
 
-        for _ in range(k):
+        for _ in range(len(population)):
             spin = self.rng.random() * total_weight
 
             for i in range(len(cumulative_fitness)):
