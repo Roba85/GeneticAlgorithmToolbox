@@ -87,6 +87,13 @@ class RouletteWheelSelection(Selection):
             ]
 
         total_weight = sum(weights)
+
+        if total_weight == 0:
+            return [
+                list(population[self.rng.randrange(len(population))])
+                for _ in range(len(population))
+            ]
+        
         cumulative_fitness = list(accumulate(weights))
 
         selected = []
