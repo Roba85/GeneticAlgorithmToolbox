@@ -41,22 +41,3 @@ class ElitistReplacement(Replacement):
         next_fitnesses = [fitness for _, fitness in selected]
 
         return next_population, next_fitnesses
-
-def main():
-    population = [[1], [2], [3]]
-    pop_fitnesses = [10, 20, 30]
-
-    offspring = [[4], [5], [6]]
-    off_fitnesses = [25, 5, 35]
-
-    # Generational replacement
-    replacement = GenerationalReplacement()
-    print(replacement(population, pop_fitnesses, offspring, off_fitnesses))
-    # ([[4], [5], [6]], [25, 5, 35])
-
-    # Elitist replacement (maximize)
-    replacement = ElitistReplacement()
-    print(replacement(population, pop_fitnesses, offspring, off_fitnesses))
-    # ([[6], [3], [4]], [35, 30, 25])
-
-main()
