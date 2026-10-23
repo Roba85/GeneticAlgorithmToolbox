@@ -11,24 +11,6 @@ class BitFlipMutation(Mutation):
 
         return mutated
 
-
-class SwapMutation(Mutation):
-    def __call__(self, chromosome):
-        mutated = list(chromosome)
-
-        if self.rng.random() < self.rate:
-            if len(mutated) > 1:
-                indices = self.rng.sample(range(len(mutated)), 2)
-                i = indices[0]
-                j = indices[1]
-
-                temp = mutated[i]
-                mutated[i] = mutated[j]
-                mutated[j] = temp
-
-        return mutated
-
-
 class IntegerMutation(Mutation):
     def __init__(self, rate=0.1, low=0, high=10, rng=None):
         super().__init__(rate, rng)
@@ -99,5 +81,21 @@ class InversionMutation(Mutation):
                 sub_segment = mutated[i: j + 1]
                 sub_segment.reverse()
                 mutated[i: j + 1] = sub_segment
+
+        return mutated
+
+class SwapMutation(Mutation):
+    def __call__(self, chromosome):
+        mutated = list(chromosome)
+
+        if self.rng.random() < self.rate:
+            if len(mutated) > 1:
+                indices = self.rng.sample(range(len(mutated)), 2)
+                i = indices[0]
+                j = indices[1]
+
+                temp = mutated[i]
+                mutated[i] = mutated[j]
+                mutated[j] = temp
 
         return mutated

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from interfaces import Representation, Chromosome, is_permutation
+from typing import cast, Sequence
 
 
 class BinaryRepresentation(Representation):
@@ -101,4 +102,7 @@ class PermutationRepresentation(Representation):
         return chromosome
 
     def is_valid(self, chromosome):
-        return is_permutation(chromosome, self.n)
+        for i in range(len(chromosome)):
+            if not isinstance(chromosome[i], int):
+                return False
+        return is_permutation(cast(Sequence[int], chromosome), self.n)

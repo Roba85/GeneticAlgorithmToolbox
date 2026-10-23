@@ -1,18 +1,40 @@
 from dataclasses import dataclass, field
 import math
-from typing import Optional, List, Tuple
 from interfaces import Representation, Selection, Crossover, Mutation, FeasibleFn, FitnessFn, Chromosome, Population, Replacement
 
 @dataclass
 class GAConfig:
     pop_size: int = 100
     generations: int = 200
-    maximize: bool = True     
-    p_crossover: float = 0.7
-    p_mutation: float = 0.2
+    maximize: bool = True
+    stop_after_x_static_avg: int = 5
+    repair_limit: int = 100
     k_group_tournament: int = 0
     log_every: int = 10
     log_verbose: bool = False
+
+# Will be completed after all is finished
+
+# def default_ga_binary(
+#         feasibilityFn: FeasibleFn, 
+#         fitnessFn: FitnessFn,
+#         population: int = 100, 
+#         gen: int = 200, 
+#         maximize: bool = True, 
+#         k_tournament: int | None = 0
+#     ):
+#     config = GAConfig(
+#         pop_size=population,
+#         generations=gen,
+#         maximize=maximize,
+#         k_group_tournament = k_tournament if k_tournament is not None else 0
+#     )
+
+#     ga = GeneticAlgorithm(
+#         config=config,
+#         selection_method=
+#     )
+    
 
 class GeneticAlgorithm:
     def __init__(
@@ -34,8 +56,9 @@ class GeneticAlgorithm:
         self.mutation_method = mutation_method
         self.feasibility_fn = feasibility
         self.fitness_fn = fitness
-        self.best_fitness = 0.0
-        self.best_chromosome = Chromosome
+        self.best_fitness = 0.0 if self.config.maximize else float('inf')
+        self.best_chromosome = None
+        self.last_best_change_at = 0
 
 
     def run_GA(self):
@@ -44,22 +67,28 @@ class GeneticAlgorithm:
             )
         # Ensuring population is feasible
         fitness = []
+        same_fitness_for = 0
+        convergence = False
+        last_gen = 0
 
         fitness_avg = 0.0
         for i in range(self.config.pop_size):
-            while not self.feasibility_fn(initial_population[i]):
+            repairs = 0
+            while not self.feasibility_fn(initial_population[i]) and repairs < self.config.repair_limit:
                 initial_population[i] = self.representation.random_Chromosome()
+                repairs += 1
+            if repairs == self.config.repair_limit:
+                print("Failed to fix invalid chromosomes")
+                return
 
             fitness.append(self.fitness_fn(initial_population[i]))
-            if fitness[i] > self.best_fitness:
-                self.best_chromosome = initial_population[i]
-                self.best_fitness = fitness[i]
+            self.update_fitness(initial_population[i], fitness[i], 0)
 
         fitness_avg = math.fsum(fitness) / self.config.pop_size
         self.print_generation(initial_population, fitness, fitness_avg, 0)
 
         logger = 1
-        for gen in range(self.config.generations):
+        for gen in range(1, self.config.generations + 1):
             new_population = self.selection_method(
                 population=initial_population, 
                 fitnesses=fitness,
@@ -77,18 +106,26 @@ class GeneticAlgorithm:
                 res1 = self.mutation_method(res1)
                 res2 = self.mutation_method(res2)
 
-                while not self.feasibility_fn(res1) or not self.feasibility_fn(res2):
+                repairs = 0
+                while not self.feasibility_fn(res1) or not self.feasibility_fn(res2) and repairs < self.config.repair_limit:
                     res1, res2 = self.crossover_method(
                                 parent1=new_population[i], 
                                 parent2=new_population[i + 1]
                             )
                     res1 = self.mutation_method(res1)
                     res2 = self.mutation_method(res2)
+                    repairs += 1
+                if repairs == self.config.repair_limit:
+                    print("Failed to fix invalid chromosomes")
+                    return
 
                 new_population[i] = res1
                 new_population[i + 1] = res2
                 new_fitness.append(self.fitness_fn(res1))
                 new_fitness.append(self.fitness_fn(res2))
+
+            if len(new_population) % 2 is not 0:
+                new_fitness.append(self.fitness_fn(new_population[-1]))
 
 
             # Replacement
@@ -99,14 +136,48 @@ class GeneticAlgorithm:
                 off_fitnesses=new_fitness,
                 maximize=self.config.maximize
             )
-            fitness_avg = math.fsum(fitness) / len(fitness)
+            new_fit_avg = math.fsum(fitness) / len(fitness)
+
+            for i in range(len(initial_population)):
+                self.update_fitness(initial_population[i], fitness[i], gen)
+
             if logger == self.config.log_every:
-                self.print_generation(initial_population, fitness, fitness_avg, gen)
+                self.print_generation(initial_population, fitness, new_fit_avg, gen)
                 logger = 0
             logger += 1
 
+            if math.isclose(new_fit_avg, fitness_avg, rel_tol=1e-3, abs_tol=1e-3):
+                same_fitness_for += 1
+            else:
+                same_fitness_for += 1
+            fitness_avg = new_fit_avg
 
-    def print_generation(self, population : Population, fitness : List[float], avg_fitness: float, gen_number: int):
+            last_gen = gen
+            if self.config.stop_after_x_static_avg == same_fitness_for:
+                convergence = True
+                break
+
+        self.print_sol(
+            last_gen,
+            convergence
+        )
+
+            
+    def update_fitness(self, chromosome: Chromosome, fit: float, gen: int):
+        if self.config.maximize:
+            if fit > self.best_fitness:
+                self.best_fitness = fit
+                self.best_chromosome = chromosome 
+                self.last_best_change_at = gen
+        else:
+            if fit < self.best_fitness:
+                self.best_fitness = fit
+                self.best_chromosome = chromosome 
+                self.last_best_change_at = gen
+
+
+
+    def print_generation(self, population : Population, fitness : list[float], avg_fitness: float, gen_number: int):
         print('=' * 10)
         print(f"Generation Number: {gen_number}")
         print(f"Average Fitness: {avg_fitness}")
@@ -117,3 +188,10 @@ class GeneticAlgorithm:
                 print(f"Chromosome: {population[i]}")
                 print(f"Fitness: {fitness[i]}")
         print('=' * 10)
+
+    def print_sol(self, last_gen: int, convergence: bool = True):
+        print('=' * 10)
+        print(f"Solution found at generation {self.last_best_change_at}")
+        print(f"Chromosome: {self.best_chromosome}")
+        print(f"Fitness: {self.best_fitness}")
+        print(f"Stopped due to convergence: {convergence}")
