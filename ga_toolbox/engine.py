@@ -13,27 +13,6 @@ class GAConfig:
     log_every: int = 10
     log_verbose: bool = False
 
-# Will be completed after all is finished
-
-# def default_ga_binary(
-#         feasibilityFn: FeasibleFn, 
-#         fitnessFn: FitnessFn,
-#         population: int = 100, 
-#         gen: int = 200, 
-#         maximize: bool = True, 
-#         k_tournament: int | None = 0
-#     ):
-#     config = GAConfig(
-#         pop_size=population,
-#         generations=gen,
-#         maximize=maximize,
-#         k_group_tournament = k_tournament if k_tournament is not None else 0
-#     )
-
-#     ga = GeneticAlgorithm(
-#         config=config,
-#         selection_method=
-#     )
     
 
 class GeneticAlgorithm:
@@ -124,7 +103,7 @@ class GeneticAlgorithm:
                 new_fitness.append(self.fitness_fn(res1))
                 new_fitness.append(self.fitness_fn(res2))
 
-            if len(new_population) % 2 is not 0:
+            if len(new_population) % 2 != 0:
                 new_fitness.append(self.fitness_fn(new_population[-1]))
 
 
@@ -149,7 +128,7 @@ class GeneticAlgorithm:
             if math.isclose(new_fit_avg, fitness_avg, rel_tol=1e-3, abs_tol=1e-3):
                 same_fitness_for += 1
             else:
-                same_fitness_for += 1
+                same_fitness_for = 0
             fitness_avg = new_fit_avg
 
             last_gen = gen
@@ -181,9 +160,9 @@ class GeneticAlgorithm:
         print('=' * 10)
         print(f"Generation Number: {gen_number}")
         print(f"Average Fitness: {avg_fitness}")
-        print('=' * 10)
-        print("Population Details:")
         if self.config.log_verbose:
+            print('=' * 10)
+            print("Population Details:")
             for i in range(len(population)):
                 print(f"Chromosome: {population[i]}")
                 print(f"Fitness: {fitness[i]}")

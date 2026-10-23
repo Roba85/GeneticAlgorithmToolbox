@@ -79,7 +79,7 @@ class RouletteWheelSelection(Selection):
         if not population:
             raise ValueError("Population cannot be empty")
 
-        if k < 0:
+        if k <= 0:
             raise ValueError("k cannot be negative")
 
 
