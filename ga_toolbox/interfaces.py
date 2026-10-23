@@ -62,7 +62,7 @@ class Representation(Operator):
         """Return `size` random chromosomes. Subclasses rarely need to override."""
         return [self.random_Chromosome() for _ in range(size)]
 
-    def is_valid(self, Chromosome: Chromosome) -> bool:
+    def is_valid(self, chromosome: Chromosome) -> bool:
         """Check that Chromosome respect the representation's own constraints
         (length, value range, permutation property...). Used by tests and by
         the engine's start-up validation. Default: accept everything."""
