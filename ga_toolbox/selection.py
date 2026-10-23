@@ -1,8 +1,8 @@
-import random, bisect
+import random
 from typing import Optional
 
 from itertools import accumulate
-from interfaces import Selection, Chromosome, Population, Fitnesses
+from interfaces import Selection, Population, Fitnesses
 
 class TournamentSelection(Selection):
     def __init__(
@@ -97,7 +97,6 @@ class RouletteWheelSelection(Selection):
             ]
 
         total_weight = sum(weights)
-
         cumulative_fitness = list(accumulate(weights))
 
         selected = []
@@ -113,19 +112,19 @@ class RouletteWheelSelection(Selection):
         return selected
 
 
-def main():
+# def main():
 
-    pop: Population = [[1], [2], [3], [4]]
+#     pop: Population = [[1], [2], [3], [4]]
 
-    selection = TournamentSelection()
+#     selection = TournamentSelection()
 
-    # Select 3 parents
-    parents = selection(
-        population=pop,
-        fitnesses=[1.0, 2.0, 3.0, 4.0],
-        k=3,
-    )
+#     # Select 3 parents
+#     parents = selection(
+#         population=pop,
+#         fitnesses=[1.0, 2.0, 3.0, 4.0],
+#         k=3,
+#     )
 
-    print(parents)
+#     print(parents)
 
-main()
+# main()
