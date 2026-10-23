@@ -73,13 +73,6 @@ class RouletteWheelSelection(Selection):
         if not population:
             raise ValueError("Population cannot be empty")
 
-<<<<<<< HEAD
-        if k <= 0:
-            raise ValueError("k cannot be negative")
-
-
-=======
->>>>>>> ec30427 (fix: return same size of population as passed in input in every selection method)
         if maximize:
             min_fitness = min(fitnesses)
             weights = [
