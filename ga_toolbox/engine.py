@@ -136,10 +136,11 @@ class GeneticAlgorithm:
                 convergence = True
                 break
 
-        self.print_sol(
-            last_gen,
-            convergence
-        )
+        # self.print_sol(
+        #     last_gen,
+        #     convergence
+        # )
+        return (self.best_chromosome, self.best_fitness)
 
             
     def update_fitness(self, chromosome: Chromosome, fit: float, gen: int):

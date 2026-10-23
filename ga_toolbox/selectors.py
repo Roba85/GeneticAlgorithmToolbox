@@ -53,6 +53,6 @@ def default_ga_binary(
 #         maximize=True
 #     )
 #     if ga is not None:
-#         ga.run_GA()
+#         res, feasibility = ga.run_GA()
 
 # main()
