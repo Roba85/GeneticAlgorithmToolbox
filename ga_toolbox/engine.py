@@ -57,7 +57,7 @@ class GeneticAlgorithm:
                 initial_population[i] = self.representation.random_Chromosome()
                 repairs += 1
             if repairs == self.config.repair_limit:
-                print("Failed to fix invalid chromosomes")
+                print(f"Failed to fix invalid chromosomes after {repairs} tries")
                 return
 
             fitness.append(self.fitness_fn(initial_population[i]))
@@ -95,7 +95,7 @@ class GeneticAlgorithm:
                     res2 = self.mutation_method(res2)
                     repairs += 1
                 if repairs == self.config.repair_limit:
-                    print("Failed to fix invalid chromosomes")
+                    print(f"Failed to fix invalid chromosomes after {repairs} tries")
                     return
 
                 new_population[i] = res1
@@ -169,8 +169,9 @@ class GeneticAlgorithm:
         print('=' * 10)
 
     def print_sol(self, last_gen: int, convergence: bool = True):
-        print('=' * 10)
+        # print('=' * 10)
+        print(f"Stopping at generation {last_gen}")
+        print(f"Stopped due to convergence: {convergence}")
         print(f"Solution found at generation {self.last_best_change_at}")
         print(f"Chromosome: {self.best_chromosome}")
         print(f"Fitness: {self.best_fitness}")
-        print(f"Stopped due to convergence: {convergence}")

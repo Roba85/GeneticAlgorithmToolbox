@@ -1,6 +1,6 @@
 from selection import TournamentSelection, RouletteWheelSelection
 from replacement import ElitistReplacement
-from crossover import OrderCrossover
+from crossover import MultiPointCrossover
 from mutation import BitFlipMutation
 from representations import BinaryRepresentation
 from engine import GAConfig, GeneticAlgorithm
@@ -36,7 +36,7 @@ def default_ga_binary(
         config=config,
         selection_method=RouletteWheelSelection(rng),
         replacement= ElitistReplacement(rng),
-        crossover_method=OrderCrossover(p_crossover, rng),
+        crossover_method=MultiPointCrossover(2, p_crossover, rng),
         mutation_method=BitFlipMutation(p_mutation, rng),
         representation=BinaryRepresentation(length, rng),
         feasibility=feasibilityFn,
@@ -47,9 +47,9 @@ def default_ga_binary(
 #     ga = default_ga_binary(
 #         fitnessFn=lambda x: x.count(1),
 #         feasibilityFn=lambda x: True,
-#         rng= random.Random(0),
+#         rng= random.Random(3),
 #         population=8,
-#         gen=8,
+#         gen=50,
 #         maximize=True
 #     )
 #     if ga is not None:
